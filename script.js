@@ -69,6 +69,7 @@ words1.forEach(word=>{
 
 if(words2.includes(word)){
 score++;
+
 }
 
 });
@@ -76,12 +77,11 @@ score++;
 return score;
 }
 
-function findBestAnswer(query){
+function findFAQ(query){
 
 let bestScore = 0;
 
-let bestAnswer =
-"Sorry, I couldn't find a relevant answer.";
+let bestAnswer = null;
 
 faqs.forEach(faq=>{
 
@@ -94,14 +94,106 @@ faq.question
 if(score > bestScore){
 
 bestScore = score;
+bestAnswer = faq.answer;
 
-bestAnswer =
-faq.answer;
 }
 
 });
 
+if(bestScore >= 2){
 return bestAnswer;
+}
+
+return null;
+}
+
+function basicChatbot(query){
+
+query =
+query.toLowerCase();
+
+if(
+query.includes("hello") ||
+query.includes("hi") ||
+query.includes("hey")
+){
+return "Hello 👋 How can I assist you today?";
+}
+
+if(
+query.includes("how are you")
+){
+return "I'm doing great. Thanks for asking 😊";
+}
+
+if(
+query.includes("your name")
+){
+return "I'm FAQ Assistant, your virtual chatbot.";
+}
+
+if(
+query.includes("thank")
+){
+return "You're welcome 😊";
+}
+
+if(
+query.includes("bye")
+){
+return "Goodbye 👋 Have a great day!";
+}
+
+if(
+query.includes("time")
+){
+return `Current time is ${new Date().toLocaleTimeString()}`;
+}
+
+if(
+query.includes("date")
+){
+return `Today's date is ${new Date().toLocaleDateString()}`;
+}
+
+if(
+query.includes("help")
+){
+return "You can ask about accounts, passwords, payments, refunds, support, or chat with me.";
+}
+
+const randomReplies = [
+
+"That's interesting. Tell me more.",
+
+"I understand. Could you provide more details?",
+
+"I'm still learning, but I'll try my best to help.",
+
+"Can you rephrase your question?",
+
+"I may not know that yet, but I'm here to help."
+
+];
+
+return randomReplies[
+Math.floor(
+Math.random() *
+randomReplies.length
+)
+];
+}
+
+function generateResponse(question){
+
+const faqAnswer =
+findFAQ(question);
+
+if(faqAnswer){
+return faqAnswer;
+}
+
+return basicChatbot(question);
 }
 
 function botReply(question){
@@ -125,11 +217,11 @@ setTimeout(()=>{
 typing.remove();
 
 const answer =
-findBestAnswer(question);
+generateResponse(question);
 
 addMessage(answer,"bot");
 
-},1000);
+},800);
 }
 
 function sendMessage(){
@@ -154,9 +246,11 @@ sendMessage
 userInput.addEventListener(
 "keypress",
 e=>{
+
 if(e.key==="Enter"){
 sendMessage();
 }
+
 }
 );
 
@@ -171,6 +265,7 @@ btn.textContent;
 
 sendMessage();
 
-});
+}
+);
 
 });
